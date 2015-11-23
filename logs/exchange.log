@@ -1,0 +1,7 @@
+2015-11-20 19:57:09,450 - going to build exchange
+2015-11-20 19:57:09,498 - Received registration message: first
+2015-11-20 19:57:09,500 - Creating new broker for: first
+2015-11-20 19:57:09,506 - Started broker for: first
+2015-11-20 19:57:09,513 - Received registration message: second
+2015-11-20 19:57:09,513 - Creating new broker for: second
+2015-11-20 19:57:09,515 - Started broker for: second
