@@ -30,29 +30,37 @@ public abstract class Trader {
     }
 
     protected void handleSellOrder(Order order, Broker broker) {
-        naiveLogic(order, broker, cost(order) < gain(order, broker));
+
+        int currentPeriodNumber = broker.getPeriodInfo().getCurrentPeriodNumber() - 1;
+
+        if (order.getInstrument().equals(Instruments.zeroCouponBond())
+                || currentPeriodNumber >= 4) {
+            return;
+        }
+
+        double cost = order.getPrice() * order.getQuantity();
+
+        if (broker.getMyPortfolio().getMoney() - cost < 1000 * currentPeriodNumber) {
+            return;
+        }
+
+        if (cost < gain(order, broker)) {
+            broker.addOrder(order.opposite());
+        }
     }
 
     protected void handleBuyOrder(Order order, Broker broker) {
-        naiveLogic(order, broker, gain(order, broker) < cost(order));
-    }
-
-    private void naiveLogic(Order order, Broker broker, Boolean predicate) {
-        if (predicate) {
+        if (gain(order, broker) < order.getPrice() * order.getQuantity()) {
             broker.addOrder(order.opposite());
         }
     }
 
     abstract protected double gain(Order order, Broker broker);
 
-    private double cost(Order order) {
-        return order.getPrice() * order.getQuantity();
-    }
-
     /*
      * Factory for creating traders.
      */
-    final public static Trader getTrader(Instrument instrument) {
+    public static Trader getTrader(Instrument instrument) {
         Trader trader;
 
         if (instrument.equals(Instruments.zeroCouponBond())) {
